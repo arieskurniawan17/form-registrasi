@@ -1,14 +1,14 @@
 import React from "react";
 import * as Validator from 'validatorjs';
 
-const Input = ({label, type, nama, onChange, alamat, name}) => {
+const Input = ({label, type, name, onChange}) => {
     return (
         <div>
         <label>
             {label}:
         </label>
         <br />
-        <input type={type} nama={nama} onChange={e => onChange(e.target.value)} />
+        <input type={type} name={name} onChange={e => onChange(e.target.value)} />
         <br />
         </div>
     )
@@ -26,45 +26,45 @@ const ShowErrors = ({errors}) => {
 
 class Validation extends React.Component {
     state = {
+        nama: '',
+        alamat: '',
         email: '',
         password: '',
-        alamat: '',
-        name: '',
         errors: []
     }
 
     handleSubmit = event => {
         event.preventDefault();
-        const {email, password, alamat, name} = this.state;
+        const {nama,alamat,email,password} = this.state;
 
         //pake validator js
 
-        const data = {email,password,alamat, name};
+        const data = {nama,alamat,email,password};
 
         const rules = {
+        nama: 'min:3|required',
+        alamat: 'min:8|required',
         email: 'required|email',
         password: 'min:8|required',
-        alamat: 'min:8|required',
-        name: 'required|name'
         };
 
         const validation = new Validator(data,rules);
         validation.passes();
         this.setState({
             errors: [
+                ...validation.errors.get('nama'),
+                ...validation.errors.get('alamat'),
                 ...validation.errors.get('email'),
                 ...validation.errors.get('password'),
-                ...validation.errors.get('alamat'),
-                ...validation.errors.get('name')
             ]
         }) 
 
         if(validation) {
             alert(` 
-                    email: ${this.state.email}
-                    jurusan: ${this.state.password}
+                    nama: ${this.state.nama}
                     alamat: ${this.state.alamat}
-                    name: ${this.state.name}
+                    email: ${this.state.email}
+                    jurusan: ${this.state.password} 
                 `);
             }
     }
@@ -84,8 +84,8 @@ class Validation extends React.Component {
                 }
                 <h4>Form Registrasi</h4>
                 <form onSubmit={this.handleSubmit}>
-                    <Input type="name" name="name" label="Name" 
-                    onChange={value => this.setState({name: value})} />
+                    <Input type="nama" name="nama" label="Nama" 
+                    onChange={value => this.setState({nama: value})} />
                     <Input type="alamat" name="alamat" label="Alamat" 
                     onChange={value => this.setState({alamat: value})} />
                     <Input type="email" name="email" label="Email" 
@@ -93,7 +93,7 @@ class Validation extends React.Component {
                     <Input type="password" name="password" label="Password" 
                     onChange={value => this.setState({password: value})} />
                     <br />
-                    <button type="submit">Login</button>
+                    <button type="submit">Submit</button>
                 </form>
             </div>
         )
